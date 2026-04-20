@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Display and Transform XML</title>
+  <script type="text/javascript">
+    function display() {
+      var xmlURL = "https://raw.githubusercontent.com/alfred311/outcome-3-badge/main/badges.xml";
+      var xmlstyleURL = "https://Jason-bravo-team.github.io/xml-viewer/style.xsl";
+
+      try {
+        var request;
+        if (window.XMLHttpRequest) {
+          request = new XMLHttpRequest();
+        } else {
+          request = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        request.open("GET", xmlURL, false);
+        request.send();
+        var xmlDocument = request.responseXML;
+
+        request.open("GET", xmlstyleURL, false);
+        request.send();
+        var xmlStyleSheet = request.responseXML;
+
+        if (window.ActiveXObject) {
+          var result = xmlDocument.transformNode(xmlStyleSheet);
+          document.getElementById("output").innerHTML = result;
+        } else {
+          var processor = new XSLTProcessor();
+          processor.importStylesheet(xmlStyleSheet);
+          var fragment = processor.transformToFragment(xmlDocument, document);
+          document.getElementById("output").appendChild(fragment);
+        }
+      } catch (err) {
+        alert('Your browser cannot handle this script');
+      }
+    }
+  </script>
+</head>
+<body onload="display()">
+  <div id="output"></div>
+</body>
+</html>
